@@ -1,4 +1,4 @@
-use redis_raw::{RedisConnection, Value};
+use redis_raw::RedisConnection;
 use tokio::net::TcpStream;
 use tokio::prelude::*;
 
@@ -8,8 +8,11 @@ async fn main() -> io::Result<()> {
     let mut con: RedisConnection = stream.into();
 
     con.set("my_key", "my value").await?;
+    con.append("my_key", "!!!").await?;
+
     let my_value = con.get("my_key").await?;
-    dbg!(my_value);
+
+    assert_eq!(my_value, "my value!!!");
     // let resp = con.write("set my_key my_value\r\n".as_ref()).await?;
     // assert_eq!(resp, Value::Okay);
 
