@@ -4,6 +4,20 @@ use tokio::io::BufReader;
 use tokio::net::TcpStream;
 use tokio::prelude::*;
 
+macro_rules! redis_command {
+    ($name:ident -> $returns:ty) => {
+        pub async fn $name(&mut self, args: impl AsRef<str>)
+         -> io::Result<$returns>
+        {
+            let cmd = format!(
+                "{} {}\r\n",
+                stringify!($name),
+                args.as_ref()
+            );
+            self.command::<$returns>(cmd.as_ref()).await
+        }
+    };
+}
 impl RedisConnection {
     async fn command<T: ParseFrom<Value>>(&mut self, command: &[u8]) -> io::Result<T> {
         self.write(command).await?;
@@ -21,20 +35,9 @@ impl RedisConnection {
         serialize::decode(&mut self.reader).await
     }
 
-    pub async fn set(&mut self, key: &str, value: &str) -> io::Result<()> {
-        let cmd = format!("set \"{}\" \"{}\"\r\n", key, value);
-        self.command::<()>(cmd.as_ref()).await
-    }
-
-    pub async fn get(&mut self, key: &str) -> io::Result<String> {
-        let cmd = format!("get \"{}\"\r\n", key);
-        self.command::<String>(cmd.as_ref()).await
-    }
-
-    pub async fn append(&mut self, key: &str, value: &str) -> io::Result<i64> {
-        let cmd = format!("append \"{}\" \"{}\"\r\n", key, value);
-        self.command::<i64>(cmd.as_ref()).await
-    }
+    redis_command!(set    -> ());
+    redis_command!(get    -> String);
+    redis_command!(append -> i64);
 }
 
 pub struct RedisConnection {

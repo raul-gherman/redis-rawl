@@ -7,8 +7,8 @@ async fn main() -> io::Result<()> {
     let stream = TcpStream::connect("127.0.0.1:6379").await?;
     let mut con: RedisConnection = stream.into();
 
-    con.set("my_key", "my value").await?;
-    con.append("my_key", "!!!").await?;
+    con.set("my_key \"my value\"").await?;
+    con.append("my_key !!!").await?;
 
     let my_value = con.get("my_key").await?;
 
