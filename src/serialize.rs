@@ -1,12 +1,14 @@
-use std::io::{Error, ErrorKind};
 use tokio::io::BufReader;
 use tokio::net::TcpStream;
 use tokio::prelude::*;
 
+use crate::types::Value;
 use std::future::Future;
 use std::pin::Pin;
 
-use crate::Value;
+// fn test() -> RedisResult<Vec<u8>> {
+//     std::fs::read("some").map_err(|err| err.into())
+// }
 
 /// reads the redis RESP responses into "Value"
 /// ```
@@ -22,23 +24,20 @@ use crate::Value;
 /// ```
 pub fn decode(
     reader: &mut BufReader<TcpStream>,
-) -> Pin<Box<dyn '_ + Future<Output = io::Result<Value>>>> {
+) -> Pin<Box<dyn '_ + Future<Output = std::result::Result<Value, String>>>> {
     Box::pin(async move {
         let mut res: Vec<u8> = Vec::new();
-        reader.read_until(b'\n', &mut res).await?;
+        reader
+            .read_until(b'\n', &mut res)
+            .await
+            .map_err(|e| e.to_string())?;
 
         let len = res.len();
         if len < 3 {
-            return Err(Error::new(
-                ErrorKind::InvalidInput,
-                format!("too short: {}", len),
-            ));
+            return Err(format!("too short: {}", len));
         }
         if !is_crlf(res[len - 2], res[len - 1]) {
-            return Err(Error::new(
-                ErrorKind::InvalidInput,
-                format!("invalid CRLF: {:?}", res),
-            ));
+            return Err(format!("invalid CRLF: {:?}", res));
         }
 
         let bytes = res[1..len - 2].as_ref();
@@ -47,38 +46,35 @@ pub fn decode(
             b'+' => match bytes {
                 OK_RESPONSE => Ok(Value::Okay),
                 bytes => String::from_utf8(bytes.to_vec())
-                    .map_err(|err| Error::new(ErrorKind::InvalidData, err))
+                    .map_err(|e| e.to_string())
                     .map(Value::Status),
             },
             // Value::Error
-            b'-' => Err(match String::from_utf8(bytes.to_vec()) {
-                Ok(value) => Error::new(ErrorKind::Other, value),
-                Err(err) => Error::new(ErrorKind::InvalidData, err),
-            }),
+            b'-' => match String::from_utf8(bytes.to_vec()) {
+                Ok(value) => Err(value),
+                Err(e) => Err(e.to_string()),
+            },
             // Value::Integer
             b':' => parse_integer(bytes).map(Value::Int),
             // Value::Bulk
             b'$' => {
-                let int = parse_integer(bytes)?;
+                let int: i64 = parse_integer(bytes)?;
                 if int == -1 {
                     // Nil bulk
                     return Ok(Value::Nil);
                 }
                 if int < -1 || int >= RESP_MAX_SIZE {
-                    return Err(Error::new(
-                        ErrorKind::InvalidInput,
-                        format!("invalid bulk length: {}", int),
-                    ));
+                    return Err(format!("invalid bulk length: {}", int));
                 }
 
                 let int = int as usize;
                 let mut buf: Vec<u8> = vec![0; int + 2];
-                reader.read_exact(buf.as_mut_slice()).await?;
+                reader
+                    .read_exact(buf.as_mut_slice())
+                    .await
+                    .map_err(|e| e.to_string())?;
                 if !is_crlf(buf[int], buf[int + 1]) {
-                    return Err(Error::new(
-                        ErrorKind::InvalidInput,
-                        format!("invalid CRLF: {:?}", buf),
-                    ));
+                    return Err(format!("invalid CRLF: {:?}", buf));
                 }
                 buf.truncate(int);
                 Ok(Value::Bulk(buf))
@@ -91,10 +87,7 @@ pub fn decode(
                     return Ok(Value::Nil);
                 }
                 if int < -1 || int >= RESP_MAX_SIZE {
-                    return Err(Error::new(
-                        ErrorKind::InvalidInput,
-                        format!("invalid array length: {}", int),
-                    ));
+                    return Err(format!("invalid array length: {}", int));
                 }
 
                 let mut array: Vec<Value> = Vec::with_capacity(int as usize);
@@ -104,10 +97,7 @@ pub fn decode(
                 }
                 Ok(Value::Array(array))
             }
-            prefix => Err(Error::new(
-                ErrorKind::InvalidInput,
-                format!("invalid RESP type: {:?}", prefix),
-            )),
+            prefix => Err(format!("invalid RESP type: {:?}", prefix)),
         }
     })
 }
@@ -118,14 +108,10 @@ fn is_crlf(a: u8, b: u8) -> bool {
 }
 
 #[inline]
-fn parse_integer(bytes: &[u8]) -> io::Result<i64> {
+fn parse_integer(bytes: &[u8]) -> std::result::Result<i64, String> {
     String::from_utf8(bytes.to_vec())
-        .map_err(|err| Error::new(ErrorKind::InvalidData, err))
-        .and_then(|value| {
-            value
-                .parse::<i64>()
-                .map_err(|err| Error::new(ErrorKind::InvalidData, err))
-        })
+        .map_err(|e| e.to_string())
+        .and_then(|value| value.parse::<i64>().map_err(|e| e.to_string()))
 }
 
 /// up to 512 MB in length
