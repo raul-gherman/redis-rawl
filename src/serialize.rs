@@ -44,15 +44,17 @@ pub fn decode(
         let bytes = res[1..len - 2].as_ref();
         match res[0] {
             // Value::String
-            b'+' => String::from_utf8(bytes.to_vec())
-                .map_err(|err| Error::new(ErrorKind::InvalidData, err))
-                .map(Value::Status),
+            b'+' => match bytes {
+                OK_RESPONSE => Ok(Value::Okay),
+                bytes => String::from_utf8(bytes.to_vec())
+                    .map_err(|err| Error::new(ErrorKind::InvalidData, err))
+                    .map(Value::Status),
+            },
             // Value::Error
             b'-' => Err(match String::from_utf8(bytes.to_vec()) {
                 Ok(value) => Error::new(ErrorKind::Other, value),
                 Err(err) => Error::new(ErrorKind::InvalidData, err),
             }),
-            // b'-' => parse_string(bytes).map(Value::Error),
             // Value::Integer
             b':' => parse_integer(bytes).map(Value::Int),
             // Value::Bulk
@@ -128,3 +130,4 @@ fn parse_integer(bytes: &[u8]) -> io::Result<i64> {
 
 /// up to 512 MB in length
 const RESP_MAX_SIZE: i64 = 512 * 1024 * 1024;
+const OK_RESPONSE: &[u8] = &[79, 75];
