@@ -15,17 +15,12 @@ async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
 
     assert_eq!(value, "value!!!");
 
-    con.command::<i64>("zadd myset 1 one\r\n".to_owned())
-        .await?;
+    for i in 1..3 {
+        con.command::<i64>(format!("zadd myset {} {}\r\n", i, i*i))
+            .await?;
+    }
+    let myset = con.command::<Vec<String>>("zrange myset 0 -1\r\n".to_owned()).await?;
 
-    // or we can use redis named commands
-    // these are thin wrappers around "command" fn
-    // see full list of implemented commands in connection.rs
-    con.set("key value").await?;
-    con.append("key !!!").await?;
-    let value = con.get("key").await?;
-
-    assert_eq!(value, "value!!!");
-
+    assert_eq!(myset, vec!["1", "4"]);
     Ok(())
 }

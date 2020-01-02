@@ -44,7 +44,25 @@ impl ParseFrom<Value> for () {
     fn parse_from(value: Value) -> Result<Self> {
         match value {
             Value::Okay => Ok(()),
-            v => Err(format!("{:?}", v)),
+            v => Err(format!("Failed parsing {:?}", v)),
+        }
+    }
+}
+
+impl ParseFrom<Value> for i64 {
+    fn parse_from(value: Value) -> Result<Self> {
+        match value {
+            Value::Int(n) => Ok(n),
+            v => Err(format!("Failed parsing {:?}", v)),
+        }
+    }
+}
+
+impl ParseFrom<Value> for Vec<u8> {
+    fn parse_from(value: Value) -> Result<Self> {
+        match value {
+            Value::Bulk(bytes) => Ok(bytes),
+            v => Err(format!("Failed parsing {:?}", v)),
         }
     }
 }
@@ -57,16 +75,7 @@ impl ParseFrom<Value> for String {
             Value::Int(n) => Ok(format!("{}", n)),
             Value::Status(s) => Ok(s),
             Value::Bulk(bytes) => String::from_utf8(bytes.to_vec()).map_err(|e| e.to_string()),
-            v => Err(format!("{:?}", v)),
-        }
-    }
-}
-
-impl ParseFrom<Value> for i64 {
-    fn parse_from(value: Value) -> Result<Self> {
-        match value {
-            Value::Int(n) => Ok(n),
-            v => Err(format!("{:?}", v)),
+            v => Err(format!("Failed parsing {:?}", v)),
         }
     }
 }
@@ -83,6 +92,6 @@ where
             }
             return Ok(result);
         }
-        Err(format!("{:?}", v))
+        Err(format!("Failed parsing {:?}", v))
     }
 }

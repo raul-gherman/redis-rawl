@@ -4,37 +4,32 @@ use tokio::io::BufReader;
 use tokio::net::TcpStream;
 use tokio::prelude::*;
 
-macro_rules! redis_command {
-    ($name:ident -> $returns:ty) => {
-        pub async fn $name(
-            &mut self,
-            args: impl AsRef<str>
-        )
-         -> RedisResult<$returns>
-        {
-            let cmd = format!(
-                "{} {}\r\n",
-                stringify!($name),
-                args.as_ref()
-            );
-            self.command::<$returns>(cmd).await
-        }
-    };
-}
+// macro_rules! redis_command {
+//     ($name:ident -> $returns:ty) => {
+//         pub async fn $name(
+//             &mut self,
+//             args: impl AsRef<str>
+//         )
+//          -> RedisResult<$returns>
+//         {
+//             let cmd = format!(
+//                 "{} {}\r\n",
+//                 stringify!($name),
+//                 args.as_ref()
+//             );
+//             self.command::<$returns>(cmd).await
+//         }
+//     };
+// }
 
 impl RedisConnection {
-    /// write a redis command into the socket.
-    /// ```
-    /// con.write("ping\r\n".as_ref())
-    /// ```
-    async fn write(&mut self, command: &[u8]) -> io::Result<()> {
-        self.reader.get_mut().write_all(command).await
-    }
-    async fn read(&mut self) -> std::result::Result<Value, String> {
-        serialize::decode(&mut self.reader).await
-    }
-
     pub async fn command<T: ParseFrom<Value>>(&mut self, command: String) -> RedisResult<T> {
+        if !command.ends_with("\r\n") {
+            return Err(RedisError {
+                message: "Commands must end with \\r\\n".to_owned(),
+                command: command,
+            });
+        }
         if let Err(io_err) = self.write(command.as_ref()).await {
             return Err(RedisError {
                 message: io_err.to_string(),
@@ -43,24 +38,22 @@ impl RedisConnection {
         }
         let value = match self.read().await {
             Err(message) => {
-                return Err(RedisError { message, command });
+                return Err(RedisError { message, command: command });
             }
             Ok(v) => v,
         };
         value
             .try_into()
-            .map_err(|message| RedisError { message, command })
+            .map_err(|message| RedisError { message, command: command })
     }
-
-    redis_command!(set    -> ());
-    redis_command!(get    -> String);
-
-    redis_command!(append       -> i64);
-    redis_command!(auth         -> String);
-    redis_command!(bgrewriteaof -> String);
-    redis_command!(bgsave       -> String);
-    redis_command!(BITCOUNT     -> i64);
-    redis_command!(BITFIELD     -> i64);
+    /// write a redis command into the socket.
+    async fn write(&mut self, command: &[u8]) -> io::Result<()> {
+        self.reader.get_mut().write_all(command).await
+    }
+    /// read and parse a redis RESP protocol response.
+    async fn read(&mut self) -> std::result::Result<Value, String> {
+        serialize::decode(&mut self.reader).await
+    }
 }
 
 pub struct RedisConnection {
