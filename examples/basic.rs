@@ -1,27 +1,31 @@
-use redis_raw::{RedisConnection, RedisResult};
+use redis_raw::RedisConnection;
 use tokio::net::TcpStream;
 
 #[tokio::main]
-async fn main() -> RedisResult<()> {
-    let stream = TcpStream::connect("127.0.0.1:6379")
-        .await
-        .expect("connected");
+async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
+    // stablishes a TcpStream to redis
+    let stream = TcpStream::connect("127.0.0.1:6379").await?;
+    // RedisConnection can be converted to and from TcpStream
     let mut con: RedisConnection = stream.into();
 
-    con.set("my_key \"my value\"").await.unwrap();
-    con.append("my_key !!!").await.unwrap();
+    // we can use the same the lower level "command" fn
+    con.command::<()>("set key value\r\n".to_owned()).await?;
+    con.command::<i64>("append key !!!\r\n".to_owned()).await?;
+    let value = con.command::<String>("get key\r\n".to_owned()).await?;
 
-    let my_value = con.get("my_key").await.unwrap();
+    assert_eq!(value, "value!!!");
 
-    assert_eq!(my_value, "my value!!!");
-    dbg! {my_value};
-    // let resp = con.write("set my_key my_value\r\n".as_ref()).await?;
-    // assert_eq!(resp, Value::Okay);
+    con.command::<i64>("zadd myset 1 one\r\n".to_owned())
+        .await?;
 
-    // dbg!(resp);
-    // con.write("get my_key\r\n".as_ref()).await?;
-    // let resp2 = con.read().await?;
-    // dbg!(resp2);
+    // or we can use redis named commands
+    // these are thin wrappers around "command" fn
+    // see full list of implemented commands in connection.rs
+    con.set("key value").await?;
+    con.append("key !!!").await?;
+    let value = con.get("key").await?;
+
+    assert_eq!(value, "value!!!");
 
     Ok(())
 }

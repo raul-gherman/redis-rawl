@@ -34,7 +34,7 @@ impl RedisConnection {
         serialize::decode(&mut self.reader).await
     }
 
-    async fn command<T: ParseFrom<Value>>(&mut self, command: String) -> RedisResult<T> {
+    pub async fn command<T: ParseFrom<Value>>(&mut self, command: String) -> RedisResult<T> {
         if let Err(io_err) = self.write(command.as_ref()).await {
             return Err(RedisError {
                 message: io_err.to_string(),
@@ -54,7 +54,13 @@ impl RedisConnection {
 
     redis_command!(set    -> ());
     redis_command!(get    -> String);
-    redis_command!(append -> i64);
+
+    redis_command!(append       -> i64);
+    redis_command!(auth         -> String);
+    redis_command!(bgrewriteaof -> String);
+    redis_command!(bgsave       -> String);
+    redis_command!(BITCOUNT     -> i64);
+    redis_command!(BITFIELD     -> i64);
 }
 
 pub struct RedisConnection {

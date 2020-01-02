@@ -22,7 +22,7 @@ pub enum Value {
 pub type RedisResult<T> = std::result::Result<T, RedisError>;
 
 #[derive(Error, Debug)]
-#[error("Redis Error (command {command:?}, message {message:?})")]
+#[error("RedisError (command: {command:?}, message: {message:?})")]
 pub struct RedisError {
     pub command: String,
     pub message: String,
