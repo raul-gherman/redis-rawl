@@ -47,11 +47,11 @@ impl RedisConnection {
             .map_err(|message| RedisError { message, command: command })
     }
     /// write a redis command into the socket.
-    async fn write(&mut self, command: &[u8]) -> io::Result<()> {
+    pub async fn write(&mut self, command: &[u8]) -> io::Result<()> {
         self.reader.get_mut().write_all(command).await
     }
     /// read and parse a redis RESP protocol response.
-    async fn read(&mut self) -> std::result::Result<Value, String> {
+    pub async fn read(&mut self) -> std::result::Result<Value, String> {
         serialize::decode(&mut self.reader).await
     }
 }

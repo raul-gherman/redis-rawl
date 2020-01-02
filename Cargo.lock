@@ -130,7 +130,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "redis-raw"
+name = "redis_raw"
 version = "0.1.0"
 dependencies = [
  "thiserror 1.0.9 (registry+https://github.com/rust-lang/crates.io-index)",

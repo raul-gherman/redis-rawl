@@ -10,7 +10,7 @@ use std::pin::Pin;
 //     std::fs::read("some").map_err(|err| err.into())
 // }
 
-/// reads the redis RESP responses into "Value"
+/// reads the redis RESP responses from the socket into `Value`
 /// ```
 /// # use tokio::net::TcpStream;
 /// # use tokio::io::BufReader;

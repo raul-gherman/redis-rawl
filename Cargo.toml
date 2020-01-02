@@ -1,5 +1,5 @@
 [package]
-name = "redis-raw"
+name = "redis_raw"
 version = "0.1.0"
 authors = ["amin roosta <amin.roosta@outlook.com>"]
 edition = "2018"

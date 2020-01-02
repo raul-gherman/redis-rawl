@@ -1,4 +1,4 @@
-use redis_raw::RedisConnection;
+use redis_raw::{RedisConnection, Value}
 use tokio::net::TcpStream;
 
 #[tokio::main]
