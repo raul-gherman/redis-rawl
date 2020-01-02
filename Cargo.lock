@@ -131,7 +131,7 @@ dependencies = [
 
 [[package]]
 name = "redis_raw"
-version = "1.0.0"
+version = "1.0.1"
 dependencies = [
  "thiserror 1.0.9 (registry+https://github.com/rust-lang/crates.io-index)",
  "tokio 0.2.6 (registry+https://github.com/rust-lang/crates.io-index)",
