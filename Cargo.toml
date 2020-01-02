@@ -1,6 +1,6 @@
 [package]
 name = "redis_raw"
-version = "1.0.0"
+version = "1.0.1"
 authors = ["amin roosta <amin.roosta@outlook.com>"]
 edition = "2018"
 description = "Minimal Redis client library implementation."

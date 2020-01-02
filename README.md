@@ -11,7 +11,7 @@ redis_raw = "*"
 If you want to use the git version:
 
 ```ini
-[redis]
+[dependencies]
 redis_raw = { version = "*", git = "git@github.com:aminroosta/redis-raw-rs.git" }
 ```
 
@@ -28,7 +28,7 @@ You can fluently switch between both API levels at any point.
 For connecting to redis you can use `tokio::net::TcpStream` which can be
 converted to (or from) `RedisConnection`.
 
-```rust,no_run
+```rust
 use redis_raw::RedisConnection;
 use tokio::net::TcpStream;
 
@@ -54,7 +54,7 @@ These functions correspond to the underlying socket's read and write operations.
 The `read()` function parses the RESP response as `redis_raw::Value`.  
 `Value` Represents a redis [RESP protcol response](https://redis.io/topics/protocol#resp-protocol-description).  
 
-```rust,no_run
+```rust
 use redis_raw::{RedisConnection, RedisResult, Value }
 
 fn do_something(con: &mut RedisConnection) -> RedisResult<Value> {
@@ -68,7 +68,7 @@ fn do_something(con: &mut RedisConnection) -> RedisResult<Value> {
 The low-level interface is similar. The `command()` function does a
 `write()` and a `read()` and converts the `Value` into requested type.
 
-```rust,no_run
+```rust
 use redis_raw::{RedisConnection, RedisResult, Value }
 
 fn do_something(con: &mut RedisConnection) -> RedisResult<String> {
@@ -80,7 +80,7 @@ fn do_something(con: &mut RedisConnection) -> RedisResult<String> {
 
 Here is another example, to find out the correct result type see [redis docs](https://redis.io/commands).
 
-```rust,no_run
+```rust
 use redis_raw::{RedisConnection, RedisResult, Value }
 
 fn do_something(con: &mut RedisConnection) -> RedisResult<Vec<String>> {

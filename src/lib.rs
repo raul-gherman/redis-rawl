@@ -11,7 +11,7 @@
 //! If you want to use the git version:
 //!
 //! ```ini
-//! [redis]
+//! [dependencies]
 //! redis_raw = { version = "*", git = "git@github.com:aminroosta/redis-raw-rs.git" }
 //! ```
 //!
