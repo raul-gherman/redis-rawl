@@ -5,6 +5,7 @@ authors = ["amin roosta <amin.roosta@outlook.com>"]
 edition = "2018"
 description = "Minimal Redis client library implementation."
 readme = "README.md"
+license = "BSD-3-Clause"
 documentation = "https://docs.rs/redis_raw"
 homepage = "https://github.com/aminroosta/redis-raw-rs"
 repository = "https://github.com/aminroosta/redis-raw-rs"
