@@ -1,8 +1,13 @@
 [package]
 name = "redis_raw"
-version = "0.1.0"
+version = "1.0.0"
 authors = ["amin roosta <amin.roosta@outlook.com>"]
 edition = "2018"
+description = "Minimal Redis client library implementation."
+readme = "README.md"
+documentation = "https://docs.rs/redis_raw"
+homepage = "https://github.com/aminroosta/redis-raw-rs"
+repository = "https://github.com/aminroosta/redis-raw-rs"
 
 [dependencies]
 tokio = { version = "0.2", features = [
