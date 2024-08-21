@@ -17,7 +17,7 @@
 //!
 //! # Basic Operation
 //!
-//! `redis_raw` exposes two API levels: a low- and a lower-level part!  
+//! `redis_raw` exposes two API levels: a low- and a lower-level part!
 //! The `low-level` part does not expose all the functionality of redis and
 //! might take some liberties in how it speaks the protocol.  The `lower-level`
 //! part of the API allows you to express any request on the redis level.
@@ -51,8 +51,8 @@
 //! which allow you to make redis requests and parse redis (RESP) responses.
 //! These functions correspond to the underlying socket's read and write operations.
 //!
-//! The `read()` function parses the RESP response as `redis_raw::Value`.  
-//! `Value` Represents a redis [RESP protcol response](https://redis.io/topics/protocol#resp-protocol-description).  
+//! The `read()` function parses the RESP response as `redis_raw::Value`.
+//! `Value` Represents a redis [RESP protcol response](https://redis.io/topics/protocol#resp-protocol-description).
 //!
 //! ```rust,no_run
 //! use redis_raw::{RedisConnection, RedisResult, Value }
@@ -97,7 +97,7 @@
 
 pub use crate::connection::RedisConnection;
 pub use crate::serialize::decode;
-pub use crate::types::{RedisError, RedisResult, Value};
+pub use crate::types::{ RedisError, RedisResult, Value };
 
 mod connection;
 mod serialize;

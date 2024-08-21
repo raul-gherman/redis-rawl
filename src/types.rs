@@ -80,10 +80,7 @@ impl ParseFrom<Value> for String {
     }
 }
 
-impl<T> ParseFrom<Value> for Vec<T>
-where
-    T: ParseFrom<Value>,
-{
+impl<T> ParseFrom<Value> for Vec<T> where T: ParseFrom<Value> {
     fn parse_from(v: Value) -> Result<Self> {
         if let Value::Array(array) = v {
             let mut result = Vec::with_capacity(array.len());

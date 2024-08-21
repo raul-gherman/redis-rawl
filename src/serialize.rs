@@ -1,14 +1,9 @@
-use tokio::io::BufReader;
+use tokio::io::{ AsyncBufReadExt, AsyncReadExt, BufReader };
 use tokio::net::TcpStream;
-use tokio::prelude::*;
 
 use crate::types::Value;
 use std::future::Future;
 use std::pin::Pin;
-
-// fn test() -> RedisResult<Vec<u8>> {
-//     std::fs::read("some").map_err(|err| err.into())
-// }
 
 /// reads the redis RESP responses from the socket into `Value`
 /// ```
@@ -22,15 +17,13 @@ use std::pin::Pin;
 /// let value = decode(&mut reader).await?;
 /// assert_eq!(value, Value::Status("PONG".to_string()));
 /// ```
+
 pub fn decode(
-    reader: &mut BufReader<TcpStream>,
+    reader: &mut BufReader<TcpStream>
 ) -> Pin<Box<dyn '_ + Future<Output = std::result::Result<Value, String>>>> {
     Box::pin(async move {
         let mut res: Vec<u8> = Vec::new();
-        reader
-            .read_until(b'\n', &mut res)
-            .await
-            .map_err(|e| e.to_string())?;
+        reader.read_until(b'\n', &mut res).await.map_err(|e| e.to_string())?;
 
         let len = res.len();
         if len < 3 {
@@ -43,17 +36,20 @@ pub fn decode(
         let bytes = res[1..len - 2].as_ref();
         match res[0] {
             // Value::String
-            b'+' => match bytes {
-                OK_RESPONSE => Ok(Value::Okay),
-                bytes => String::from_utf8(bytes.to_vec())
-                    .map_err(|e| e.to_string())
-                    .map(Value::Status),
-            },
+            b'+' =>
+                match bytes {
+                    OK_RESPONSE => Ok(Value::Okay),
+                    bytes =>
+                        String::from_utf8(bytes.to_vec())
+                            .map_err(|e| e.to_string())
+                            .map(Value::Status),
+                }
             // Value::Error
-            b'-' => match String::from_utf8(bytes.to_vec()) {
-                Ok(value) => Err(value),
-                Err(e) => Err(e.to_string()),
-            },
+            b'-' =>
+                match String::from_utf8(bytes.to_vec()) {
+                    Ok(value) => Err(value),
+                    Err(e) => Err(e.to_string()),
+                }
             // Value::Integer
             b':' => parse_integer(bytes).map(Value::Int),
             // Value::Bulk
@@ -69,10 +65,7 @@ pub fn decode(
 
                 let int = int as usize;
                 let mut buf: Vec<u8> = vec![0; int + 2];
-                reader
-                    .read_exact(buf.as_mut_slice())
-                    .await
-                    .map_err(|e| e.to_string())?;
+                reader.read_exact(buf.as_mut_slice()).await.map_err(|e| e.to_string())?;
                 if !is_crlf(buf[int], buf[int + 1]) {
                     return Err(format!("invalid CRLF: {:?}", buf));
                 }
