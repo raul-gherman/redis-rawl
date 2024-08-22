@@ -5,12 +5,7 @@ use tokio::net::TcpStream;
 
 impl RedisConnection {
     pub async fn command<T: ParseFrom<Value>>(&mut self, command: String) -> RedisResult<T> {
-        if !command.ends_with("\r\n") {
-            return Err(RedisError {
-                message: "Commands must end with \\r\\n".to_owned(),
-                command,
-            });
-        }
+        let command = format!("{command}\r\n");
         if let Err(io_err) = self.write(command.as_ref()).await {
             return Err(RedisError {
                 message: io_err.to_string(),
