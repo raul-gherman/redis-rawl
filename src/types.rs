@@ -1,15 +1,14 @@
 use thiserror::Error;
 
-/// Represents a redis RESP protcol response
+/// Represents a redis RESP protocol response
 /// https://redis.io/topics/protocol#resp-protocol-description
 #[derive(PartialEq, Eq, Clone, Debug)]
 pub enum Value {
     /// A nil response from the server.
     Nil,
-    /// A status response which represents the string "OK".
+    /// A status response that represents the string "OK".
     Okay,
-    /// An integer response.  Note that there are a few situations
-    /// in which redis actually returns a string for an integer.
+    /// An integer response. Note that there are a few situations when redis actually returns a string for an integer.
     Int(i64),
     /// A simple string response.
     Status(String),
@@ -80,7 +79,10 @@ impl ParseFrom<Value> for String {
     }
 }
 
-impl<T> ParseFrom<Value> for Vec<T> where T: ParseFrom<Value> {
+impl<T> ParseFrom<Value> for Vec<T>
+where
+    T: ParseFrom<Value>,
+{
     fn parse_from(v: Value) -> Result<Self> {
         if let Value::Array(array) = v {
             let mut result = Vec::with_capacity(array.len());
