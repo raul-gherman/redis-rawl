@@ -8,22 +8,22 @@ impl RedisConnection {
         if !command.ends_with("\r\n") {
             return Err(RedisError {
                 message: "Commands must end with \\r\\n".to_owned(),
-                command: command,
+                command,
             });
         }
         if let Err(io_err) = self.write(command.as_ref()).await {
             return Err(RedisError {
                 message: io_err.to_string(),
-                command: command,
+                command,
             });
         }
         let value = match self.read().await {
             Err(message) => {
-                return Err(RedisError { message, command: command });
+                return Err(RedisError { message, command });
             }
             Ok(v) => v,
         };
-        value.try_into().map_err(|message| RedisError { message, command: command })
+        value.try_into().map_err(|message| RedisError { message, command })
     }
     /// write a redis command into the socket.
     pub async fn write(&mut self, command: &[u8]) -> io::Result<()> {
@@ -44,11 +44,5 @@ impl From<TcpStream> for RedisConnection {
         RedisConnection {
             reader: BufReader::new(tcp_stream),
         }
-    }
-}
-
-impl Into<TcpStream> for RedisConnection {
-    fn into(self) -> TcpStream {
-        self.reader.into_inner()
     }
 }

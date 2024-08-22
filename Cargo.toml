@@ -1,6 +1,6 @@
 [package]
 name = "redis_rawl"
-version = "0.0.1"
+version = "0.0.2"
 authors = ["raul gherman <raul.gherman@protonmail.com>"]
 edition = "2021"
 description = "Minimal Redis client library implementation."
@@ -12,17 +12,7 @@ repository = "https://github.com/raul-gherman/redis-rawl"
 
 [dependencies]
 tokio = { version = "1.39.3", features = [
-    # "fs",
     "io-util",
-    # "io-std",
-    "macros",
     "net",
-    # "parking_lot",
-    # "process",
-    # "rt",
-    "rt-multi-thread",
-    # "signal",
-    # "sync",
-    # "time",
 ] }
 thiserror = "1.0"

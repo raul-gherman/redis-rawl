@@ -59,7 +59,8 @@ pub fn decode(
                     // Nil bulk
                     return Ok(Value::Nil);
                 }
-                if int < -1 || int >= RESP_MAX_SIZE {
+
+                if !(-1..RESP_MAX_SIZE).contains(&int) {
                     return Err(format!("invalid bulk length: {}", int));
                 }
 
@@ -79,7 +80,7 @@ pub fn decode(
                     // Null array
                     return Ok(Value::Nil);
                 }
-                if int < -1 || int >= RESP_MAX_SIZE {
+                if !(-1..RESP_MAX_SIZE).contains(&int) {
                     return Err(format!("invalid array length: {}", int));
                 }
 
