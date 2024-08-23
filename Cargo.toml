@@ -1,6 +1,6 @@
 [package]
 name = "redis_rawl"
-version = "0.0.6"
+version = "0.1.20240823"
 authors = ["raul gherman <raul.gherman@protonmail.com>"]
 edition = "2021"
 description = "Minimal Redis client library implementation. Forked from redis-raw `git@github.com:aminroosta/redis-raw-rs.git`"
