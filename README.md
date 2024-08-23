@@ -1,6 +1,8 @@
 redis_rawl is a minimal Redis client library implementation.
 It exposes a general purpose interface to Redis.
 
+Forked from redis-raw git@github.com:aminroosta/redis-raw-rs.git, got up-to-date and adjusted.
+
 ```ini
 [dependencies]
 redis_rawl = "*"
@@ -31,16 +33,16 @@ async fn main() -> std::result::Result<(), Box<dyn std::error::Error>> {
     let mut con: RedisConnection = stream.into();
 
     // we can use the same the lower level "command" fn
-    con.command::<()>("set key value\r\n".to_owned()).await?;
-    con.command::<i64>("append key !!!\r\n".to_owned()).await?;
-    let value = con.command::<String>("get key\r\n".to_owned()).await?;
+    con.command::<()>("set key value".to_owned()).await?;
+    con.command::<i64>("append key !!!".to_owned()).await?;
+    let value = con.command::<String>("get key".to_owned()).await?;
 
     assert_eq!(value, "value!!!");
 
     for i in 1..3 {
-        con.command::<i64>(format!("zadd myset {} {}\r\n", i, i * i)).await?;
+        con.command::<i64>(format!("zadd myset {} {}", i, i * i)).await?;
     }
-    let myset = con.command::<Vec<String>>("zrange myset 0 -1\r\n".to_owned()).await?;
+    let myset = con.command::<Vec<String>>("zrange myset 0 -1".to_owned()).await?;
 
     assert_eq!(myset, vec!["1", "4"]);
     Ok(())
@@ -61,7 +63,7 @@ The `read()` function parses the RESP response as `redis_rawl::Value`.
 use redis_rawl::{RedisConnection, RedisResult, Value }
 
 fn do_something(con: &mut RedisConnection) -> RedisResult<Value> {
-   con.write("set key vvv\r\n").await?
+   con.write("set key vvv").await?
    con.read().await
 }
 ```
@@ -75,9 +77,9 @@ The low-level interface is similar. The `command()` function does a
 use redis_rawl::{RedisConnection, RedisResult, Value }
 
 fn do_something(con: &mut RedisConnection) -> RedisResult<String> {
-   con.command::<()>("set key value\r\n".to_owned()).await?;
-   con.command::<i64>("append key !!!\r\n".to_owned()).await?;
-   con.command::<String>("get key\r\n".to_owned()).await
+   con.command::<()>("set key value".to_owned()).await?;
+   con.command::<i64>("append key !!!".to_owned()).await?;
+   con.command::<String>("get key".to_owned()).await
 }
 ```
 
@@ -88,9 +90,9 @@ use redis_rawl::{RedisConnection, RedisResult, Value }
 
 fn do_something(con: &mut RedisConnection) -> RedisResult<Vec<String>> {
    for i in 1..10 {
-       con.command::<i64>(format!("zadd myset {} {}\r\n", i, i*i)).await?;
+       con.command::<i64>(format!("zadd myset {} {}", i, i*i)).await?;
    }
-   con.command::<Vec<String>>("zrange myset 0 -1\r\n".to_owned()).await
+   con.command::<Vec<String>>("zrange myset 0 -1".to_owned()).await
 }
 ```
 
