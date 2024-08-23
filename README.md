@@ -1,7 +1,7 @@
 redis_rawl is a minimal Redis client library implementation.
 It exposes a general purpose interface to Redis.
 
-Forked from redis-raw git@github.com:aminroosta/redis-raw-rs.git, got up-to-date and adjusted.
+Forked from redis-raw `git@github.com:aminroosta/redis-raw-rs.git`, got up-to-date and adjusted.
 
 ```ini
 [dependencies]
