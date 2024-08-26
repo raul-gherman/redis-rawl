@@ -5,7 +5,7 @@ Forked from redis-raw `git@github.com:aminroosta/redis-raw-rs.git`, got up-to-da
 
 ```ini
 [dependencies]
-redis_rawl = "*"
+redis_rawl = "v0.1.20240826"
 ```
 
 # Basic Operation
@@ -22,7 +22,7 @@ For connecting to redis you can use `tokio::net::TcpStream` which can be
 converted to (or from) `RedisConnection`.
 
 ```rust
-use redis_raw::RedisConnection;
+use redis_rawl::RedisConnection;
 use tokio::net::TcpStream;
 
 #[tokio::main]
