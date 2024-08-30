@@ -1,6 +1,6 @@
 [package]
 name = "redis_rawl"
-version = "0.1.20240826"
+version = "0.1.20240831"
 authors = ["raul gherman <raul.gherman@protonmail.com>"]
 edition = "2021"
 description = """
@@ -13,7 +13,7 @@ homepage = "https://github.com/raul-gherman/redis-rawl"
 repository = "https://github.com/raul-gherman/redis-rawl"
 
 [dependencies]
-tokio = { version = "1.39.3", features = [
+tokio = { version = "1.40.0", features = [
     "io-util",
     "net",
 ] }
