@@ -1,6 +1,6 @@
 [package]
 name = "redis_rawl"
-version = "0.1.20240831"
+version = "0.1.20240906"
 authors = ["raul gherman <raul.gherman@protonmail.com>"]
 edition = "2021"
 description = """
