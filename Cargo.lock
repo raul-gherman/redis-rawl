@@ -124,7 +124,7 @@ dependencies = [
 
 [[package]]
 name = "redis_rawl"
-version = "0.1.20240915"
+version = "0.1.20240920"
 dependencies = [
  "thiserror",
  "tokio",

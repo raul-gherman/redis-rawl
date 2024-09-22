@@ -12,7 +12,7 @@ use std::pin::Pin;
 /// # use self::resp::{Decoder, Value};
 ///
 /// let mut stream = TcpStream::connect("127.0.0.1:6379").await?
-/// stream.write_all("ping\r\n").await?;
+/// stream.write_all("ping").await?;
 /// let mut reader = BufReader::new(stream);
 /// let value = decode(&mut reader).await?;
 /// assert_eq!(value, Value::Status("PONG".to_string()));
