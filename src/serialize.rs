@@ -19,21 +19,21 @@ use std::pin::Pin;
 /// ```
 
 pub fn decode(
-    reader: &mut BufReader<TcpStream>,
+    reader: &mut BufReader<TcpStream>
 ) -> Pin<Box<dyn '_ + Future<Output = std::result::Result<Value, String>>>> {
     Box::pin(async move {
         let mut res: Vec<u8> = Vec::new();
-        reader
-            .read_until(b'\n', &mut res)
-            .await
-            .map_err(|e| e.to_string())?;
+        reader.read_until(b'\n', &mut res).await.map_err(|e| e.to_string())?;
 
         let len = res.len();
         if len < 3 {
             return Err(format!("too short: {}", len));
         }
         if !is_crlf(res[len - 2], res[len - 1]) {
-            return Err(format!("invalid CRLF: {:?}", res));
+            return Err(format!(
+                "invalid CRLF: {:?}",
+                res
+            ));
         }
 
         let bytes = res[1..len - 2].as_ref();
@@ -61,17 +61,20 @@ pub fn decode(
                 }
 
                 if !(-1..RESP_MAX_SIZE).contains(&int) {
-                    return Err(format!("invalid bulk length: {}", int));
+                    return Err(format!(
+                        "invalid bulk length: {}",
+                        int
+                    ));
                 }
 
                 let int = int as usize;
                 let mut buf: Vec<u8> = vec![0; int + 2];
-                reader
-                    .read_exact(buf.as_mut_slice())
-                    .await
-                    .map_err(|e| e.to_string())?;
+                reader.read_exact(buf.as_mut_slice()).await.map_err(|e| e.to_string())?;
                 if !is_crlf(buf[int], buf[int + 1]) {
-                    return Err(format!("invalid CRLF: {:?}", buf));
+                    return Err(format!(
+                        "invalid CRLF: {:?}",
+                        buf
+                    ));
                 }
                 buf.truncate(int);
                 Ok(Value::Bulk(buf))
@@ -84,7 +87,10 @@ pub fn decode(
                     return Ok(Value::Nil);
                 }
                 if !(-1..RESP_MAX_SIZE).contains(&int) {
-                    return Err(format!("invalid array length: {}", int));
+                    return Err(format!(
+                        "invalid array length: {}",
+                        int
+                    ));
                 }
 
                 let mut array: Vec<Value> = Vec::with_capacity(int as usize);
@@ -94,13 +100,19 @@ pub fn decode(
                 }
                 Ok(Value::Array(array))
             }
-            prefix => Err(format!("invalid RESP type: {:?}", prefix)),
+            prefix => Err(format!(
+                "invalid RESP type: {:?}",
+                prefix
+            )),
         }
     })
 }
 
 #[inline]
-fn is_crlf(a: u8, b: u8) -> bool {
+fn is_crlf(
+    a: u8,
+    b: u8,
+) -> bool {
     a == b'\r' && b == b'\n'
 }
 
