@@ -1,4 +1,4 @@
-use tokio::io::{AsyncBufReadExt, AsyncReadExt, BufReader};
+use tokio::io::{ AsyncBufReadExt, AsyncReadExt, BufReader };
 use tokio::net::TcpStream;
 
 use crate::types::Value;
@@ -30,26 +30,26 @@ pub fn decode(
             return Err(format!("too short: {}", len));
         }
         if !is_crlf(res[len - 2], res[len - 1]) {
-            return Err(format!(
-                "invalid CRLF: {:?}",
-                res
-            ));
+            return Err(format!("invalid CRLF: {:?}", res));
         }
 
         let bytes = res[1..len - 2].as_ref();
         match res[0] {
             // Value::String
-            b'+' => match bytes {
-                OK_RESPONSE => Ok(Value::Okay),
-                bytes => String::from_utf8(bytes.to_vec())
-                    .map_err(|e| e.to_string())
-                    .map(Value::Status),
-            },
+            b'+' =>
+                match bytes {
+                    OK_RESPONSE => Ok(Value::Okay),
+                    bytes =>
+                        String::from_utf8(bytes.to_vec())
+                            .map_err(|e| e.to_string())
+                            .map(Value::Status),
+                }
             // Value::Error
-            b'-' => match String::from_utf8(bytes.to_vec()) {
-                Ok(value) => Err(value),
-                Err(e) => Err(e.to_string()),
-            },
+            b'-' =>
+                match String::from_utf8(bytes.to_vec()) {
+                    Ok(value) => Err(value),
+                    Err(e) => Err(e.to_string()),
+                }
             // Value::Integer
             b':' => parse_integer(bytes).map(Value::Int),
             // Value::Bulk
@@ -61,20 +61,14 @@ pub fn decode(
                 }
 
                 if !(-1..RESP_MAX_SIZE).contains(&int) {
-                    return Err(format!(
-                        "invalid bulk length: {}",
-                        int
-                    ));
+                    return Err(format!("invalid bulk length: {}", int));
                 }
 
                 let int = int as usize;
                 let mut buf: Vec<u8> = vec![0; int + 2];
                 reader.read_exact(buf.as_mut_slice()).await.map_err(|e| e.to_string())?;
                 if !is_crlf(buf[int], buf[int + 1]) {
-                    return Err(format!(
-                        "invalid CRLF: {:?}",
-                        buf
-                    ));
+                    return Err(format!("invalid CRLF: {:?}", buf));
                 }
                 buf.truncate(int);
                 Ok(Value::Bulk(buf))
@@ -87,10 +81,7 @@ pub fn decode(
                     return Ok(Value::Nil);
                 }
                 if !(-1..RESP_MAX_SIZE).contains(&int) {
-                    return Err(format!(
-                        "invalid array length: {}",
-                        int
-                    ));
+                    return Err(format!("invalid array length: {}", int));
                 }
 
                 let mut array: Vec<Value> = Vec::with_capacity(int as usize);
@@ -100,19 +91,13 @@ pub fn decode(
                 }
                 Ok(Value::Array(array))
             }
-            prefix => Err(format!(
-                "invalid RESP type: {:?}",
-                prefix
-            )),
+            prefix => Err(format!("invalid RESP type: {:?}", prefix)),
         }
     })
 }
 
 #[inline]
-fn is_crlf(
-    a: u8,
-    b: u8,
-) -> bool {
+fn is_crlf(a: u8, b: u8) -> bool {
     a == b'\r' && b == b'\n'
 }
 

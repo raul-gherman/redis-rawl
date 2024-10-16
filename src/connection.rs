@@ -1,13 +1,10 @@
 use crate::serialize;
-use crate::types::{ParseFrom, RedisError, RedisResult, Value};
-use tokio::io::{self, AsyncWriteExt, BufReader};
+use crate::types::{ ParseFrom, RedisError, RedisResult, Value };
+use tokio::io::{ self, AsyncWriteExt, BufReader };
 use tokio::net::TcpStream;
 
 impl RedisConnection {
-    pub async fn command<T: ParseFrom<Value>>(
-        &mut self,
-        command: String,
-    ) -> RedisResult<T> {
+    pub async fn command<T: ParseFrom<Value>>(&mut self, command: String) -> RedisResult<T> {
         let command = format!("{command}\r\n");
         if let Err(io_err) = self.write(command.as_ref()).await {
             return Err(RedisError {
@@ -24,10 +21,7 @@ impl RedisConnection {
         value.try_into().map_err(|message| RedisError { message, command })
     }
     /// write a redis command into the socket.
-    pub async fn write(
-        &mut self,
-        command: &[u8],
-    ) -> io::Result<()> {
+    pub async fn write(&mut self, command: &[u8]) -> io::Result<()> {
         self.reader.get_mut().write_all(command).await
     }
     /// read and parse a redis RESP protocol response.
