@@ -1,20 +1,20 @@
 [package]
 name = "redis_rawl"
-version = "0.1.20241016"
+version = "0.1.20241022"
 authors = ["raul gherman <raul.gherman@protonmail.com>"]
 edition = "2021"
 description = """
 Minimal Redis client library implementation.
 Forked from redis-raw `git@github.com:aminroosta/redis-raw-rs.git`"""
 readme = "README.md"
-license = "BSD-3-Clause"
+license = "MIT"
 documentation = "https://docs.rs/redis_rawl"
 homepage = "https://github.com/raul-gherman/redis-rawl"
 repository = "https://github.com/raul-gherman/redis-rawl"
 categories = ["database"]
 
 [dependencies]
-tokio = { version = "1.40.0", features = [
+tokio = { version = "1.41.0", features = [
     "io-util",
     "net",
 ] }
