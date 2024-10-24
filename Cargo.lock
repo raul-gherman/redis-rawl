@@ -124,7 +124,7 @@ dependencies = [
 
 [[package]]
 name = "redis_rawl"
-version = "0.1.20241023"
+version = "0.1.20241024"
 dependencies = [
  "thiserror",
  "tokio",
@@ -148,9 +148,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "2.0.82"
+version = "2.0.85"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "83540f837a8afc019423a8edb95b52a8effe46957ee402287f4292fae35be021"
+checksum = "5023162dfcd14ef8f32034d8bcd4cc5ddc61ef7a247c024a33e24e1f24d21b56"
 dependencies = [
  "proc-macro2",
  "quote",
