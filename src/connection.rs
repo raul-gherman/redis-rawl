@@ -45,6 +45,11 @@ impl RedisConnection {
 	pub async fn read(&mut self) -> std::result::Result<Value, String> {
 		serialize::decode(&mut self.reader).await
 	}
+
+	/// close redis client connection
+	pub async fn close(self) -> io::Result<()>{
+		self.reader.into_inner().shutdown().await
+	}
 }
 
 pub struct RedisConnection {

@@ -9,19 +9,6 @@ use crate::types::Value;
 use std::future::Future;
 use std::pin::Pin;
 
-/// reads the redis RESP responses from the socket into `Value`
-/// ```
-/// # use tokio::net::TcpStream;
-/// # use tokio::io::BufReader;
-/// # use self::resp::{Decoder, Value};
-///
-/// let mut stream = TcpStream::connect("127.0.0.1:6379").await?
-/// stream.write_all("ping").await?;
-/// let mut reader = BufReader::new(stream);
-/// let value = decode(&mut reader).await?;
-/// assert_eq!(value, Value::Status("PONG".to_string()));
-/// ```
-
 pub fn decode(
 	reader: &mut BufReader<TcpStream>
 ) -> Pin<Box<dyn '_ + Future<Output = std::result::Result<Value, String>>>> {
