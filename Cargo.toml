@@ -1,6 +1,6 @@
 [package]
 name = "redis_rawl"
-version = "0.2.20241108"
+version = "0.2.20241117"
 authors = ["raul gherman <raul.gherman@protonmail.com>"]
 edition = "2021"
 description = """
@@ -14,10 +14,7 @@ repository = "https://github.com/raul-gherman/redis-rawl"
 categories = ["database"]
 
 [dependencies]
-tokio = { version = "1.41.1", features = [
-    "io-util",
-    "net",
-] }
+tokio = { version = "1.41.1", features = ["io-util", "net"] }
 thiserror = "2.0"
 concat-strs-derive = "0.1.20241101"
 btoi = "0.4.3"

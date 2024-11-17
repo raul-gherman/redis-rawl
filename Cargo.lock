@@ -159,7 +159,7 @@ dependencies = [
 
 [[package]]
 name = "redis_rawl"
-version = "0.2.20241108"
+version = "0.2.20241117"
 dependencies = [
  "btoi",
  "concat-strs-derive",
