@@ -61,9 +61,9 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
 name = "concat-strs-derive"
-version = "0.1.20241101"
+version = "0.1.20241121"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "91dcdf4a2aebdfb32d971926d5fe5e7fdbd176776aefa1a1efe2935d82ad759b"
+checksum = "5c84885680030ea7cf416aa32196874daf63e68be369bd3c7b3405d639976031"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -141,9 +141,9 @@ checksum = "915a1e146535de9163f3987b8944ed8cf49a18bb0056bcebcdcece385cece4ff"
 
 [[package]]
 name = "proc-macro2"
-version = "1.0.89"
+version = "1.0.90"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f139b0662de085916d1fb67d2b4169d1addddda1919e696f3252b740b629986e"
+checksum = "d4e1ced3fe749df87a909c23e9607ab9a09c8f0bedb7e03b8146f4c08c298673"
 dependencies = [
  "unicode-ident",
 ]
@@ -185,9 +185,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "2.0.87"
+version = "2.0.88"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "25aa4ce346d03a6dcd68dd8b4010bcb74e54e62c90c573f394c46eae99aba32d"
+checksum = "f8e9a4e1639f47f655bf8e5198232f05615d5fb7e864ef5c4f5abdaf8ad3b8f4"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -231,9 +231,9 @@ dependencies = [
 
 [[package]]
 name = "unicode-ident"
-version = "1.0.13"
+version = "1.0.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "e91b56cd4cadaeb79bbf1a5645f6b4f8dc5bde8834ad5894a8db35fda9efa1fe"
+checksum = "adb9e6ca4f869e1180728b7950e35922a7fc6397f7b641499e8f3ef06e50dc83"
 
 [[package]]
 name = "wasi"
