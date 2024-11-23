@@ -1,5 +1,5 @@
 use crate::types::Value;
-use btoi::btoi;
+use atoi::atoi;
 use std::future::Future;
 use std::pin::Pin;
 use tokio::io::{AsyncBufReadExt, AsyncReadExt, BufReader};
@@ -115,5 +115,5 @@ fn is_crlf(
 
 #[inline]
 fn parse_integer(bytes: &[u8]) -> std::result::Result<i64, String> {
-    btoi::<i64>(bytes).map_err(|e| e.to_string())
+    atoi::<i64>(bytes).ok_or("parse_integer error".to_owned())
 }

@@ -1,6 +1,6 @@
 [package]
 name = "redis_rawl"
-version = "0.1.20241121"
+version = "0.1.20241123"
 authors = ["raul gherman <raul.gherman@protonmail.com>"]
 edition = "2021"
 description = """
@@ -17,4 +17,4 @@ categories = ["database"]
 tokio = { version = "1.41.1", features = ["io-util", "net"] }
 thiserror = "2.0"
 concat-strs-derive = "0.1.20241121"
-btoi = "0.4.3"
+atoi = "2.0"
