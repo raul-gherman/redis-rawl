@@ -61,9 +61,9 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
 name = "concat-strs-derive"
-version = "0.1.20241121"
+version = "0.1.20241203"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "5c84885680030ea7cf416aa32196874daf63e68be369bd3c7b3405d639976031"
+checksum = "b17ffacd83a67fe69a0f2f9e5e35d5befa997ba86f29d0ee6aa7725377a23a56"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -152,7 +152,7 @@ dependencies = [
 
 [[package]]
 name = "redis_rawl"
-version = "0.3.1"
+version = "0.3.2"
 dependencies = [
  "atoi",
  "concat-strs-derive",
@@ -209,9 +209,9 @@ dependencies = [
 
 [[package]]
 name = "tokio"
-version = "1.41.1"
+version = "1.42.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "22cfb5bee7a6a52939ca9224d6ac897bb669134078daa8735560897f69de4d33"
+checksum = "5cec9b21b0450273377fc97bd4c33a8acffc8c996c987a7c5b319a0083707551"
 dependencies = [
  "backtrace",
  "bytes",
