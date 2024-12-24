@@ -114,9 +114,8 @@ fn is_crlf(
 
 #[inline]
 fn parse_integer(bytes: &[u8]) -> std::result::Result<i64, String> {
-    // btoi::btoi::<i64>(bytes).map_err(|e| e.to_string());
     std::str::from_utf8(&bytes)
-        .unwrap()
+        .map_or("", |f| f)
         .parse::<i64>()
         .map_err(|e| e.to_string())
 }
