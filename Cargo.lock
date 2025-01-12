@@ -46,9 +46,9 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 
 [[package]]
 name = "concat-strs-derive"
-version = "0.1.20241203"
+version = "0.1.20250112"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b17ffacd83a67fe69a0f2f9e5e35d5befa997ba86f29d0ee6aa7725377a23a56"
+checksum = "467ce6d2a9d222ba6e5b1dc43356faac1ea3d88205c22cf0812f55c058169551"
 dependencies = [
  "proc-macro2",
  "quote",
@@ -128,7 +128,7 @@ dependencies = [
 
 [[package]]
 name = "redis_rawl"
-version = "0.6.0"
+version = "0.6.1"
 dependencies = [
  "concat-strs-derive",
  "thiserror",
