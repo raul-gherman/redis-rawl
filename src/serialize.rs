@@ -49,7 +49,6 @@ pub fn decode(
                     // Nil bulk
                     return Ok(Value::Nil);
                 }
-
                 if !(-1..RESP_MAX_SIZE).contains(&int) {
                     return Err(format!("invalid bulk length: {}", int));
                 }

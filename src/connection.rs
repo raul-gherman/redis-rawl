@@ -26,6 +26,7 @@ impl RedisConnection {
             .try_into()
             .map_err(|message| RedisError { message, command })
     }
+
     /// write a redis command into the socket.
     pub async fn write(
         &mut self,
@@ -33,6 +34,7 @@ impl RedisConnection {
     ) -> io::Result<()> {
         self.reader.get_mut().write_all(command).await
     }
+
     /// read and parse a redis RESP protocol response.
     pub async fn read(&mut self) -> std::result::Result<Value, String> {
         serialize::decode(&mut self.reader).await
