@@ -1,7 +1,11 @@
 use crate::types::Value;
 use std::future::Future;
 use std::pin::Pin;
-use tokio::io::{AsyncBufReadExt, AsyncReadExt, BufReader};
+use tokio::io::{
+    AsyncBufReadExt,
+    AsyncReadExt,
+    BufReader,
+};
 use tokio::net::TcpStream;
 
 /// up to 512 MB in length
@@ -23,7 +27,10 @@ pub fn decode(
             return Err(format!("too short: {}", len));
         }
         if !is_crlf(res[len - 2], res[len - 1]) {
-            return Err(format!("invalid CRLF: {:?}", res));
+            return Err(format!(
+                "invalid CRLF: {:?}",
+                res
+            ));
         }
 
         let bytes = res[1..len - 2].as_ref();
@@ -50,7 +57,10 @@ pub fn decode(
                     return Ok(Value::Nil);
                 }
                 if !(-1..RESP_MAX_SIZE).contains(&int) {
-                    return Err(format!("invalid bulk length: {}", int));
+                    return Err(format!(
+                        "invalid bulk length: {}",
+                        int
+                    ));
                 }
 
                 let int = int as usize;
@@ -60,7 +70,10 @@ pub fn decode(
                     .await
                     .map_err(|e| e.to_string())?;
                 if !is_crlf(buf[int], buf[int + 1]) {
-                    return Err(format!("invalid CRLF: {:?}", buf));
+                    return Err(format!(
+                        "invalid CRLF: {:?}",
+                        buf
+                    ));
                 }
                 buf.truncate(int);
                 Ok(Value::Bulk(buf))
@@ -73,7 +86,10 @@ pub fn decode(
                     return Ok(Value::Nil);
                 }
                 if !(-1..RESP_MAX_SIZE).contains(&int) {
-                    return Err(format!("invalid array length: {}", int));
+                    return Err(format!(
+                        "invalid array length: {}",
+                        int
+                    ));
                 }
 
                 let mut array: Vec<Value> = Vec::with_capacity(int as usize);
@@ -83,7 +99,10 @@ pub fn decode(
                 }
                 Ok(Value::Array(array))
             }
-            prefix => Err(format!("invalid RESP type: {:?}", prefix)),
+            prefix => Err(format!(
+                "invalid RESP type: {:?}",
+                prefix
+            )),
         }
     })
 }
@@ -98,7 +117,7 @@ fn is_crlf(
 
 #[inline]
 fn parse_integer(bytes: &[u8]) -> std::result::Result<i64, String> {
-    std::str::from_utf8(&bytes)
+    std::str::from_utf8(bytes)
         .map_or("", |f| f)
         .parse::<i64>()
         .map_err(|e| e.to_string())

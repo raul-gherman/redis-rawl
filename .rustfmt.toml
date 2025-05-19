@@ -1,3 +1,8 @@
+array_width = 60
+binop_separator = "Front"
+chain_width = 33
 edition = "2024"
+fn_call_width = 30
 fn_params_layout = "Vertical"
+imports_layout = "Vertical"
 newline_style = "Unix"
