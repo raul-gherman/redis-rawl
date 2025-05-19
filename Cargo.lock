@@ -128,7 +128,7 @@ dependencies = [
 
 [[package]]
 name = "redis_rawl"
-version = "0.7.4"
+version = "0.7.5"
 dependencies = [
  "concat-strs-derive",
  "thiserror",

@@ -38,12 +38,19 @@ impl RedisConnection {
                 std::process::exit(2)
             }
         };
-        let redis_connection = async move {
+        let redis_connection = match tokio::spawn(async move {
             RedisConnection {
                 reader: BufReader::new(stream),
             }
-        }
-        .await;
+        })
+        .await
+        {
+            Ok(redis_connection) => redis_connection,
+            Err(e) => {
+                eprintln!("{e:#?}");
+                std::process::exit(2);
+            }
+        };
         redis_connection
     }
 
