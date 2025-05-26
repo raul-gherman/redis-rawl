@@ -38,6 +38,9 @@ impl RedisConnection {
                 std::process::exit(2)
             }
         };
+        stream
+            .set_nodelay(true)
+            .expect("set_nodelay failed?");
         let redis_connection = match tokio::spawn(async move {
             RedisConnection {
                 reader: BufReader::new(stream),
